@@ -21,8 +21,15 @@ class UserRepositoryTest {
     @Test
     @DisplayName("회원 생성")
     void t1() {
-        SiteUser user1 = new SiteUser(null, "user1", "{noop}1234", "user1@test.com");
-        SiteUser user2 = new SiteUser(null, "user2", "{noop}1234", "user2@test.com");
+        SiteUser user1 = new SiteUser();
+        user1.setUsername("user1");
+        user1.setEmail("user1@test.com");
+        user1.setPassword("{noop}1234");
+
+        SiteUser user2 = new SiteUser();
+        user2.setUsername("user2");
+        user2.setEmail("user2@test.com");
+        user2.setPassword("{noop}1234");
 
         userRepository.saveAll(Arrays.asList(user1, user2));
     }
@@ -37,6 +44,16 @@ class UserRepositoryTest {
         assertThat(u1.getUsername()).isEqualTo("user1");
         assertThat(u1.getEmail()).isEqualTo("user1@test.com");
         assertThat(u1.getPassword()).isEqualTo("{noop}1234");
+    }
 
+    @Test
+    @DisplayName("2번 회원을 Qsl로 가져오기")
+    void t3() {
+        SiteUser u1 = userRepository.getQslUser(2L);
+
+        assertThat(u1.getId()).isEqualTo(2L);
+        assertThat(u1.getUsername()).isEqualTo("user2");
+        assertThat(u1.getEmail()).isEqualTo("user2@test.com");
+        assertThat(u1.getPassword()).isEqualTo("{noop}1234");
     }
 }
