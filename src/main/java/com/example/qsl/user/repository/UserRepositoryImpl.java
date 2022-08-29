@@ -17,10 +17,14 @@ public class UserRepositoryImpl implements UserRepositoryCustom{
         * FROM site_user
         * WHERE id = 1
         * */
+
+        /*
         return jpaQueryFactory
                 .select(QSiteUser.siteUser)
                 .from(QSiteUser.siteUser)
                 .where(QSiteUser.siteUser.id.eq(1L))
                 .fetch();
+        */
+        return null;
     }
 }
