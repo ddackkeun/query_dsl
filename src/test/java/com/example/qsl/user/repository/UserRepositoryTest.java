@@ -6,6 +6,8 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.ActiveProfiles;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Arrays;
 
@@ -14,6 +16,8 @@ import static org.junit.jupiter.api.Assertions.*;
 
 
 @SpringBootTest
+@Transactional
+@ActiveProfiles("test")
 class UserRepositoryTest {
 
     @Autowired
@@ -22,19 +26,19 @@ class UserRepositoryTest {
     @Test
     @DisplayName("회원 생성")
     void t1() {
-        SiteUser user1 = SiteUser.builder()
-                .username("user1")
-                .email("user1@test.com")
+        SiteUser user3 = SiteUser.builder()
+                .username("user3")
+                .email("user3@test.com")
                 .password("{noop}1234")
                 .build();
 
-        SiteUser user2 = SiteUser.builder()
-                .username("user2")
-                .email("user2@test.com")
+        SiteUser user4 = SiteUser.builder()
+                .username("user4")
+                .email("user4@test.com")
                 .password("{noop}1234")
                 .build();
 
-        userRepository.saveAll(Arrays.asList(user1, user2));
+        userRepository.saveAll(Arrays.asList(user3, user4));
     }
 
 
