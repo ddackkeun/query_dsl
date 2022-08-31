@@ -12,6 +12,7 @@ import java.util.Arrays;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 
+
 @SpringBootTest
 class UserRepositoryTest {
 
@@ -21,15 +22,17 @@ class UserRepositoryTest {
     @Test
     @DisplayName("회원 생성")
     void t1() {
-        SiteUser user1 = new SiteUser();
-        user1.setUsername("user1");
-        user1.setEmail("user1@test.com");
-        user1.setPassword("{noop}1234");
+        SiteUser user1 = SiteUser.builder()
+                .username("user1")
+                .email("user1@test.com")
+                .password("{noop}1234")
+                .build();
 
-        SiteUser user2 = new SiteUser();
-        user2.setUsername("user2");
-        user2.setEmail("user2@test.com");
-        user2.setPassword("{noop}1234");
+        SiteUser user2 = SiteUser.builder()
+                .username("user2")
+                .email("user2@test.com")
+                .password("{noop}1234")
+                .build();
 
         userRepository.saveAll(Arrays.asList(user1, user2));
     }
