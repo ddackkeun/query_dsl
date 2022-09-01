@@ -2,8 +2,11 @@ package com.example.qsl.user.repository;
 
 import com.example.qsl.user.entity.QSiteUser;
 import com.example.qsl.user.entity.SiteUser;
+import com.querydsl.core.Tuple;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
+
+import java.util.List;
 
 import static com.example.qsl.user.entity.QSiteUser.siteUser;
 
@@ -41,4 +44,34 @@ public class UserRepositoryImpl implements UserRepositoryCustom {
         return (int) count;
     }
 
+    @Override
+    public SiteUser getQslUserOrderByIdAscOne() {
+        return jpaQueryFactory
+                .select(siteUser)
+                .from(siteUser)
+                .orderBy(siteUser.id.asc())
+                .fetchFirst();
+    }
+
+    @Override
+    public List<SiteUser> getQslUserOrderByIdAsc() {
+        return jpaQueryFactory
+                .select(siteUser)
+                .from(siteUser)
+                .orderBy(siteUser.id.asc())
+                .fetch();
+    }
+
+    @Override
+    public List<SiteUser> searchQsl(String kw) {
+        return jpaQueryFactory
+                .select(siteUser)
+                .from(siteUser)
+                .where(
+                        siteUser.username.contains(kw)
+                                .or(siteUser.email.contains(kw))
+                )
+                .orderBy(siteUser.id.desc())
+                .fetch();
+    }
 }
