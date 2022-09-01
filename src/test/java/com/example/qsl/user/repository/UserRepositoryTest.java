@@ -63,4 +63,10 @@ class UserRepositoryTest {
         assertThat(u1.getEmail()).isEqualTo("user2@test.com");
         assertThat(u1.getPassword()).isEqualTo("{noop}1234");
     }
+
+    @Test
+    @DisplayName("모든 회원 수")
+    void t4() {
+        int count = userRepository.getQslCount();
+    }
 }

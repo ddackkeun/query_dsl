@@ -4,4 +4,6 @@ import com.example.qsl.user.entity.SiteUser;
 
 public interface UserRepositoryCustom {
     SiteUser getQslUser(Long id);
+
+    int getQslCount();
 }

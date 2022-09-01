@@ -5,7 +5,8 @@ import com.example.qsl.user.entity.SiteUser;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 
-import static com.example.qsl.user.entity.QSiteUser.*;
+import static com.example.qsl.user.entity.QSiteUser.siteUser;
+
 
 @RequiredArgsConstructor
 public class UserRepositoryImpl implements UserRepositoryCustom {
@@ -25,4 +26,19 @@ public class UserRepositoryImpl implements UserRepositoryCustom {
                 .where(siteUser.id.eq(id))
                 .fetchOne();
     }
+
+    @Override
+    public int getQslCount() {
+        /*
+        * SELECT COUNT(SITE_USER)
+        * FROM SITE_USER
+        * */
+        long count = jpaQueryFactory
+                .select(siteUser.count())
+                .from(siteUser)
+                .fetchOne();
+
+        return (int) count;
+    }
+
 }
