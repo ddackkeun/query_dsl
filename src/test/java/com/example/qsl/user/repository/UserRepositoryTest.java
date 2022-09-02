@@ -1,14 +1,20 @@
 package com.example.qsl.user.repository;
 
 import com.example.qsl.user.entity.SiteUser;
+import net.bytebuddy.TypeCache;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -129,5 +135,34 @@ class UserRepositoryTest {
         assertThat(u.getUsername()).isEqualTo("user2");
         assertThat(u.getEmail()).isEqualTo("user2@test.com");
         assertThat(u.getPassword()).isEqualTo("{noop}1234");
+    }
+
+    @Test
+    @DisplayName("검색, Page리턴, id ASC, pageSize=1, page=0")
+    void t8(){
+        long totalCount = userRepository.count();
+        int pageSize = 1;
+        int totalPages = (int) Math.ceil(totalCount / (double) pageSize);
+        int page = 1;
+        String kw = "user";
+
+        ArrayList<Sort.Order> sorts = new ArrayList<>();
+        sorts.add(Sort.Order.asc("id"));                // 역순 정렬 -> user2, user1
+
+        Pageable pageable = PageRequest.of(page, pageSize, Sort.by(sorts));
+        Page<SiteUser> usersPage = userRepository.searchQsl(kw, pageable);
+        assertThat(usersPage.getTotalPages()).isEqualTo(totalPages);    // 총 페이지 개수
+        assertThat(usersPage.getNumber()).isEqualTo(page);              // 페이지 시작 위치
+        assertThat(usersPage.getSize()).isEqualTo(pageSize);            // 한 페이지의 요소 개수
+
+        List<SiteUser> users = usersPage.get().toList();        // 한 페이지 가져옴
+        assertThat(users.size()).isEqualTo(pageSize);           // 현재 한페이지의 요소 1개
+
+        SiteUser u1 = users.get(0);
+
+        assertThat(u1.getId()).isEqualTo(2L);
+        assertThat(u1.getUsername()).isEqualTo("user2");
+        assertThat(u1.getEmail()).isEqualTo("user2@test.com");
+        assertThat(u1.getPassword()).isEqualTo("{noop}1234");
     }
 }
