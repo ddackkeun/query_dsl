@@ -3,10 +3,15 @@ package com.example.qsl.user.repository;
 import com.example.qsl.user.entity.QSiteUser;
 import com.example.qsl.user.entity.SiteUser;
 import com.querydsl.core.Tuple;
+import com.querydsl.core.types.Order;
+import com.querydsl.core.types.OrderSpecifier;
+import com.querydsl.core.types.dsl.PathBuilder;
+import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.support.PageableExecutionUtils;
 
 import java.util.List;
@@ -81,7 +86,7 @@ public class UserRepositoryImpl implements UserRepositoryCustom {
 
     @Override
     public Page<SiteUser> searchQsl(String kw, Pageable pageable) {
-        List<SiteUser> users = jpaQueryFactory
+        JPAQuery<SiteUser> usersQuery = jpaQueryFactory
                 .select(siteUser)
                 .from(siteUser)
                 .where(
@@ -89,9 +94,14 @@ public class UserRepositoryImpl implements UserRepositoryCustom {
                                 .or(siteUser.email.contains(kw))
                 )
                 .offset(pageable.getOffset())       // 몇개를 건너띄어야 하는지
-                .limit(pageable.getPageSize())      // 한페이지 보이는 개수
-                .orderBy(siteUser.id.asc())         // 아이디로 역순 정렬
-                .fetch();
+                .limit(pageable.getPageSize());
+
+        for (Sort.Order o : pageable.getSort()) {
+            PathBuilder pathBuilder = new PathBuilder(siteUser.getType(), siteUser.getMetadata());
+            usersQuery.orderBy(new OrderSpecifier(o.isAscending() ? Order.ASC : Order.DESC, pathBuilder.get(o.getProperty())));
+        }
+
+
 
         LongSupplier totalSupplier = () -> 2;
 
