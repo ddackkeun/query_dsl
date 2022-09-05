@@ -165,4 +165,32 @@ class UserRepositoryTest {
         assertThat(u1.getEmail()).isEqualTo("user2@test.com");
         assertThat(u1.getPassword()).isEqualTo("{noop}1234");
     }
+
+    @Test
+    @DisplayName("검색, Page 리턴, id DESC, paseSize=1, page=0")
+    void t9() {
+        long totalCount = userRepository.count();
+        int pageSize = 1;
+        int totalPages = (int) Math.ceil(totalCount/(double) pageSize);
+        int page = 1;
+        String kw = "user";
+
+        List<Sort.Order> sorts = new ArrayList<>();
+        sorts.add(Sort.Order.desc("id"));
+        PageRequest pageable = PageRequest.of(page, pageSize, Sort.by(sorts));
+        Page<SiteUser> userPage = userRepository.searchQsl(kw, pageable);
+
+        assertThat(userPage.getTotalPages()).isEqualTo(totalPages);
+        assertThat(userPage.getNumber()).isEqualTo(page);
+        assertThat(userPage.getSize()).isEqualTo(pageSize);
+
+        List<SiteUser> users = userPage.get().toList();
+        assertThat(users.size()).isEqualTo(pageSize);
+
+        SiteUser u = users.get(0);
+        assertThat(u.getId()).isEqualTo(1L);
+        assertThat(u.getUsername()).isEqualTo("user1");
+        assertThat(u.getEmail()).isEqualTo("user1@test.com");
+        assertThat(u.getPassword()).isEqualTo("{noop}1234");
+    }
 }

@@ -10,6 +10,7 @@ import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.support.PageableExecutionUtils;
@@ -98,13 +99,19 @@ public class UserRepositoryImpl implements UserRepositoryCustom {
 
         for (Sort.Order o : pageable.getSort()) {
             PathBuilder pathBuilder = new PathBuilder(siteUser.getType(), siteUser.getMetadata());
-            usersQuery.orderBy(new OrderSpecifier(o.isAscending() ? Order.ASC : Order.DESC, pathBuilder.get(o.getProperty())));
+            usersQuery.orderBy(new OrderSpecifier(o.isAscending() ? Order.ASC : Order.DESC, pathBuilder.get(o.getProperty()))); // 쿼리를 덧붙힘
         }
 
+        List<SiteUser> users = usersQuery.fetch();
 
+        JPAQuery<Long> usersCountQuery = jpaQueryFactory
+                .select(siteUser.count())
+                .from(siteUser)
+                .where(
+                        siteUser.username.contains(kw)
+                                .or(siteUser.email.contains(kw))
+                );
 
-        LongSupplier totalSupplier = () -> 2;
-
-        return PageableExecutionUtils.getPage(users, pageable, totalSupplier);
+        return PageableExecutionUtils.getPage(users, pageable, usersCountQuery::fetchOne);
     }
 }
