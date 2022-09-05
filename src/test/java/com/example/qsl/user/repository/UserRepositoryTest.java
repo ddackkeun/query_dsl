@@ -1,5 +1,6 @@
 package com.example.qsl.user.repository;
 
+import com.example.qsl.interestKeyword.entity.InterestKeyword;
 import com.example.qsl.user.entity.SiteUser;
 import net.bytebuddy.TypeCache;
 import org.assertj.core.api.Assertions;
@@ -11,6 +12,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -192,5 +194,23 @@ class UserRepositoryTest {
         assertThat(u.getUsername()).isEqualTo("user1");
         assertThat(u.getEmail()).isEqualTo("user1@test.com");
         assertThat(u.getPassword()).isEqualTo("{noop}1234");
+    }
+
+    @Test
+    @DisplayName("검색, Page리턴, id DESC, pageSize=1, page=0")
+    void t10() {
+        SiteUser u2 = userRepository.getQslUser(2L);
+
+        u2.addInterestKeywordContent("축구");
+        u2.addInterestKeywordContent("롤");
+        u2.addInterestKeywordContent("헬스");
+        u2.addInterestKeywordContent("헬스"); //중복은 무시
+
+        userRepository.save(u2);
+
+        // 엔티티 클래스 : interestKeyword
+        // Interest_keyword 테이블블
+        // 회원과 키는 다대다 관계
+
     }
 }
