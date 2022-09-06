@@ -1,5 +1,6 @@
 package com.example.qsl.user.repository;
 
+import com.example.qsl.interestKeyword.entity.QInterestKeyword;
 import com.example.qsl.user.entity.QSiteUser;
 import com.example.qsl.user.entity.SiteUser;
 import com.querydsl.core.Tuple;
@@ -113,5 +114,27 @@ public class UserRepositoryImpl implements UserRepositoryCustom {
                 );
 
         return PageableExecutionUtils.getPage(users, pageable, usersCountQuery::fetchOne);
+    }
+
+    @Override
+    public List<SiteUser> getQslUserByInterestKeyword(String keywordContent) {
+        /*
+        SELECT U.id
+        FROM site_user AS U
+        INNER JOIN site_user_interest_keywords AS SUIK
+        ON U.id = SUIK.site_user_id
+        INNER JOIN interest_keyword AS IK
+        ON IK.content = SUIK.interest_keywords_content;
+        WHERE IK.content = "축구";
+        */
+
+        QInterestKeyword IK = new QInterestKeyword("IK");
+        return jpaQueryFactory
+                .selectFrom(siteUser)
+                .innerJoin(siteUser.interestKeywords, IK)
+                .where(
+                        IK.content.eq(keywordContent)
+                )
+                .fetch();
     }
 }

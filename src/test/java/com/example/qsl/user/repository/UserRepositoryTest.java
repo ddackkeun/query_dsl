@@ -141,7 +141,7 @@ class UserRepositoryTest {
 
     @Test
     @DisplayName("검색, Page리턴, id ASC, pageSize=1, page=0")
-    void t8(){
+    void t8() {
         long totalCount = userRepository.count();
         int pageSize = 1;
         int totalPages = (int) Math.ceil(totalCount / (double) pageSize);
@@ -173,7 +173,7 @@ class UserRepositoryTest {
     void t9() {
         long totalCount = userRepository.count();
         int pageSize = 1;
-        int totalPages = (int) Math.ceil(totalCount/(double) pageSize);
+        int totalPages = (int) Math.ceil(totalCount / (double) pageSize);
         int page = 1;
         String kw = "user";
 
@@ -212,5 +212,35 @@ class UserRepositoryTest {
         // Interest_keyword 테이블블
         // 회원과 키는 다대다 관계
 
+    }
+
+    @Test
+    @DisplayName("축구에 관심 있는 회원들 검색")
+    void t11() {
+        List<SiteUser> users = userRepository.getQslUserByInterestKeyword("축구");
+
+        assertThat(users.size()).isEqualTo(1);
+
+        SiteUser u = users.get(0);
+
+        assertThat(u.getId()).isEqualTo(1L);
+        assertThat(u.getUsername()).isEqualTo("user1");
+        assertThat(u.getEmail()).isEqualTo("user1@test.com");
+        assertThat(u.getPassword()).isEqualTo("{noop}1234");
+    }
+
+    @Test
+    @DisplayName("no sql 축구에 관심 있는 회원들 검색")
+    void t12() {
+        List<SiteUser> users = userRepository.findByInterestKeywords_content("축구");
+
+        assertThat(users.size()).isEqualTo(1);
+
+        SiteUser u = users.get(0);
+
+        assertThat(u.getId()).isEqualTo(1L);
+        assertThat(u.getUsername()).isEqualTo("user1");
+        assertThat(u.getEmail()).isEqualTo("user1@test.com");
+        assertThat(u.getPassword()).isEqualTo("{noop}1234");
     }
 }
