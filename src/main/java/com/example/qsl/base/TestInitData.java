@@ -28,13 +28,17 @@ public class TestInitData {
                     .password("{noop}1234")
                     .build();
 
+            List<SiteUser> siteUsers = userRepository.saveAll(Arrays.asList(u1, u2));
+
             u1.addInterestKeywordContent("축구");
             u1.addInterestKeywordContent("농구");
+            u1.addInterestKeywordContent("농구");
 
+            u2.addInterestKeywordContent("농구");
             u2.addInterestKeywordContent("클라이밍");
             u2.addInterestKeywordContent("마라톤");
 
-            List<SiteUser> siteUsers = userRepository.saveAll(Arrays.asList(u1, u2));
+            userRepository.saveAll(Arrays.asList(u1, u2));
         };
     }
 }
