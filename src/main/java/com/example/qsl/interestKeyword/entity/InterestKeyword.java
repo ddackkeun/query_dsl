@@ -1,13 +1,10 @@
 package com.example.qsl.interestKeyword.entity;
 
 
+import com.example.qsl.user.entity.SiteUser;
 import lombok.*;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import java.util.Objects;
+import javax.persistence.*;
 
 @Entity
 @Setter @Getter
@@ -15,7 +12,13 @@ import java.util.Objects;
 @NoArgsConstructor
 @Builder
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
+@IdClass(InterestKeywordId.class)
 public class InterestKeyword {
+
+    @Id
+    @ManyToOne
+    @EqualsAndHashCode.Include
+    private SiteUser user;
 
     @Id
     @EqualsAndHashCode.Include

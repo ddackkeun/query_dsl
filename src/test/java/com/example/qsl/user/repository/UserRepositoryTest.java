@@ -36,19 +36,19 @@ class UserRepositoryTest {
     @Test
     @DisplayName("회원 생성")
     void t1() {
-        SiteUser user3 = SiteUser.builder()
-                .username("user3")
-                .email("user3@test.com")
+        SiteUser user9= SiteUser.builder()
+                .username("user9")
+                .email("user9@test.com")
                 .password("{noop}1234")
                 .build();
 
-        SiteUser user4 = SiteUser.builder()
-                .username("user4")
-                .email("user4@test.com")
+        SiteUser user10 = SiteUser.builder()
+                .username("user10")
+                .email("user10@test.com")
                 .password("{noop}1234")
                 .build();
 
-        userRepository.saveAll(Arrays.asList(user3, user4));
+        userRepository.saveAll(Arrays.asList(user9, user10));
     }
 
 
@@ -190,9 +190,9 @@ class UserRepositoryTest {
         assertThat(users.size()).isEqualTo(pageSize);
 
         SiteUser u = users.get(0);
-        assertThat(u.getId()).isEqualTo(1L);
-        assertThat(u.getUsername()).isEqualTo("user1");
-        assertThat(u.getEmail()).isEqualTo("user1@test.com");
+        assertThat(u.getId()).isEqualTo(7L);
+        assertThat(u.getUsername()).isEqualTo("user7");
+        assertThat(u.getEmail()).isEqualTo("user7@test.com");
         assertThat(u.getPassword()).isEqualTo("{noop}1234");
     }
 
@@ -253,5 +253,33 @@ class UserRepositoryTest {
         u1.follow(u2);
 
         userRepository.save(u2);
+    }
+
+    @Test
+    @DisplayName("본인이 본인을 follow 할 수 없다.")
+    @Rollback(false)
+    void t14() {
+        SiteUser u1 = userRepository.getQslUser(1L);
+
+        u1.follow(u1);
+
+        assertThat(u1.getFollowers().size()).isEqualTo(0);
+    }
+
+    @Test
+    @DisplayName("")
+    @Rollback(false)
+    void t15() {
+        SiteUser u1 = userRepository.getQslUser(1L);
+        SiteUser u2 = userRepository.getQslUser(2L);
+
+        u1.follow(u2);
+
+        assertThat(u1.getFollowers().size()).isEqualTo(0);
+        assertThat(u1.getFollowings().size()).isEqualTo(1);
+
+        assertThat(u2.getFollowers().size()).isEqualTo(1);
+        assertThat(u2.getFollowings().size()).isEqualTo(0);
+
     }
 }
