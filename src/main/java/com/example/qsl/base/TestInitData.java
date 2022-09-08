@@ -71,9 +71,10 @@ public class TestInitData {
             u2.addInterestKeywordContent("클라이밍");
             u2.addInterestKeywordContent("마라톤");
 
+            // 유저를 먼저 저장
             userRepository.saveAll(Arrays.asList(u1, u2, u3, u4, u5, u6, u7, u8));
 
-            u8.follow(u7);
+            u8.follow(u7);  // 중복된 내용은 저장되지 않음
             u8.follow(u7);
             u8.follow(u6);
             u8.follow(u5);
@@ -85,6 +86,7 @@ public class TestInitData {
             u7.follow(u4);
             u7.follow(u3);
 
+            // 수정된 follw 내용을 저장한다.
             userRepository.saveAll(Arrays.asList(u1, u2, u3, u4, u5, u6, u7, u8));
         };
     }
