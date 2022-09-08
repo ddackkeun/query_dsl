@@ -71,6 +71,15 @@ public class TestInitData {
             u2.addInterestKeywordContent("클라이밍");
             u2.addInterestKeywordContent("마라톤");
 
+            // 8번이 following 하는 사람
+            u3.addInterestKeywordContent("피아노");
+            u4.addInterestKeywordContent("바이올린");
+            u5.addInterestKeywordContent("베이스");
+            u6.addInterestKeywordContent("기타");
+            u6.addInterestKeywordContent("베이스");
+            u7.addInterestKeywordContent("EDM");
+            // 8번이 팔로우 하는 사람의 관심사 리스트 결과 : 피아노, 바이올린, 베이스, 기타, EDM
+
             // 유저를 먼저 저장
             userRepository.saveAll(Arrays.asList(u1, u2, u3, u4, u5, u6, u7, u8));
 

@@ -17,6 +17,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.support.PageableExecutionUtils;
 
 import java.util.List;
+import java.util.Set;
 import java.util.function.LongSupplier;
 
 import static com.example.qsl.user.entity.QSiteUser.siteUser;
@@ -135,6 +136,22 @@ public class UserRepositoryImpl implements UserRepositoryCustom {
                 .where(
                         IK.content.eq(keywordContent)
                 )
+                .fetch();
+
+
+    }
+
+    @Override
+    public List<String> getKeywordContentsByFollowingsOf(SiteUser user) {
+        QSiteUser siteUser2 = new QSiteUser("siteUser2");
+
+        return jpaQueryFactory
+                .select(QInterestKeyword.interestKeyword.content)
+                .distinct()
+                .from(QInterestKeyword.interestKeyword)
+                .innerJoin(QInterestKeyword.interestKeyword.user, siteUser)
+                .innerJoin(siteUser.followers, siteUser2)
+                .where(siteUser2.id.eq(user.getId()))
                 .fetch();
     }
 }
